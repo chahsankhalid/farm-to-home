@@ -20,8 +20,8 @@ spec:
             - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_PORT
               value: "10794"
             - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_DATABASE
-              value: auth
+              value: <%myservicedb%>
             - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_USER
-              value: authservice
+              value: <%myserviceuser%>
             - name: <%MY_SERVICE%>_CACHED_TABLE_REFRESH_INTERVAL_MAX_SECONDS
               value: "120"
