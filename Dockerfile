@@ -29,7 +29,6 @@ RUN apt-get update && \
     echo "username = \"$GITLAB_TOKEN_NAME\"" >> /root/.config/pypoetry/auth.toml && \
     echo "password = \"$GITLAB_TOKEN\"" >> /root/.config/pypoetry/auth.toml && \
     poetry --version && \
-    # Clean up APT cache to reduce image size
     rm -rf /var/lib/apt/lists/*
 
 # Copy project files and install dependencies
