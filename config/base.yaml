@@ -23,7 +23,7 @@ fraudio_kafka_secrets_path: '~/.tls/local-kafka'
 fraudio_postgres_enabled: false
 fraudio_postgres_host: localhost
 fraudio_postgres_port: '5432'
-fraudio_postgres_database: auth
+fraudio_postgres_database: <%myservicedb%>
 fraudio_postgres_user: localuser
 fraudio_postgres_password: localpass
 fraudio_postgres_min_connections: 1

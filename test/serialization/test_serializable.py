@@ -1,25 +1,39 @@
 from uuid import UUID
 
-from <%my_service%>.domain.models.user_role import UserRole
+from <%my_service%>.domain.models.credentials import Credentials
 from <%my_service%>.util import time
+
+from <%my_service%>.domain.models.enums import ApiMode, OnboardingStage
 
 
 async def test_serializable_datetimes():
-    user_role = _sample_user_role()
-    record = user_role.to_dict()
-    assert UserRole.from_dict(record) == user_role
+    sample_credentials = _sample_credentials()
+    record = sample_credentials.to_dict()
+    assert Credentials.from_dict(record) == sample_credentials
 
 
 async def test_serializable_datetimes_from_sql_record():
-    user_role = _sample_user_role()
-    record = user_role.to_native_dict()
-    assert UserRole.from_native_dict(record) == user_role
+    sample_credentials = _sample_credentials()
+    record = sample_credentials.to_native_dict()
+    assert Credentials.from_native_dict(record) == sample_credentials
 
 
-def _sample_user_role():
-    return UserRole(
+def _sample_credentials():
+    return Credentials(
         user_id=UUID('00000000000000000000000000000001', version=4),
-        role_id=UUID('00000000000000000000000000000002', version=4),
-        granted_on=time.current_datetime(),
-        granted_by=UUID('00000000000000000000000000000003', version=4)
+        tenant_id=UUID('00000000000000000000000000000002', version=4),
+        api_key_id=UUID('00000000000000000000000000000003', version=4),
+        scopes=['abc', 'def-geh'],
+        username='user@example.com',
+        api_key_fingerprint='a1b2c3d',
+        tenant='sometenant',
+        customer='sometenant-test-trial',
+        tenant_ancestors=['fraudio', 'supertenant'],
+        tenant_descendants={
+            'subtenant1': {'subsubtenant': {}},
+            'subtenant2': {}
+        },
+        onboarding_stage=OnboardingStage.INTEGRATING,
+        api_mode=ApiMode.SANDBOX,
+        expires_on=time.current_datetime()
     )

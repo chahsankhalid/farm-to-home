@@ -73,27 +73,3 @@ async def test_forbidden(api_client, mock_kafka_producer):
     kafka_http_transaction_filename='zero_records.json')
 async def test_echo(api_client, mock_kafka_producer):
     pass
-
-
-@integration_test(
-    method='GET',
-    url='/credentials',
-    test_data_path=TEST_DATA_PATH,
-    response_filename='unauthorized-1-response.json',
-    response_code=401,
-    request_headers={'X-Fraudio-Credentials': ''},
-    kafka_http_transaction_filename='zero_records.json')
-async def test_unauthorized_without_token(api_client, mock_kafka_producer):
-    pass
-
-
-@integration_test(
-    method='GET',
-    url='/credentials',
-    test_data_path=TEST_DATA_PATH,
-    response_filename='unauthorized-2-response.json',
-    response_code=401,
-    request_headers={'X-Fraudio-Credentials': '{}'},
-    kafka_http_transaction_filename='zero_records.json')
-async def test_unauthorized_with_unknown_token(api_client, mock_kafka_producer):
-    pass

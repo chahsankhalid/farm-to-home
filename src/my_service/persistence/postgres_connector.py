@@ -11,7 +11,7 @@ from asyncpg import Connection
 from asyncpg.connection import LoggedQuery
 
 from <%my_service%>.config import ConfigLoader
-from <%my_service%>.domain.models.enums import ApiMode, HashType, RecordStatus, LoginType, OnboardingStage
+from <%my_service%>.domain.models.enums import ApiMode, OnboardingStage
 from <%my_service%>.persistence import migrations
 from <%my_service%>.util import paths, time
 
@@ -100,9 +100,6 @@ class PostgresConnector:
                                         decoder=PostgresConnector._decode_timestamp)
         enum_mapping = {
             'api_mode': ApiMode,
-            'hash_type': HashType,
-            'record_status': RecordStatus,
-            'login_type': LoginType,
             'onboarding_stage': OnboardingStage
         }
         for pg_enum_name, py_enum in enum_mapping.items():
