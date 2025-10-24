@@ -1,0 +1,5 @@
+ArbitraryJson:
+  description: Any JSON array or object
+  content:
+    application/json:
+      schema: { }

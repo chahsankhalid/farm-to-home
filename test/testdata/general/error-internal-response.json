@@ -1,0 +1,6 @@
+{
+  "detail": "An unhandled exception has occurred while handling your request. The application has logged this as an incident - please contact an administrator.",
+  "status": 500,
+  "title": "Internal Server Error",
+  "type": "about:blank"
+}

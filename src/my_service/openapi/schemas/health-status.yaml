@@ -1,0 +1,12 @@
+HealthStatus:
+  type: object
+  required:
+    - status
+    - app_version
+  properties:
+    status:
+      type: string
+      example: 'Healthy'
+    app_version:
+      type: string
+      example: '1.0.0'

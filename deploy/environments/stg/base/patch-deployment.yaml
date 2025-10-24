@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%my-service%>
+spec:
+  template:
+    spec:
+      containers:
+        - name: <%my-service%>
+          env:
+            - name: FRAUDIO_ENV
+              value: STG
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "namespace=stg"
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_HOST
+              value: fraudio-rules-db-fraudio-stg.k.aivencloud.com
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_PORT
+              value: "22559"
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_DATABASE
+              value: <%myservicedb%>
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_USER
+              value: <%myserviceuser%>

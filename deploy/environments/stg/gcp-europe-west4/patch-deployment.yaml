@@ -1,0 +1,17 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%my-service%>
+spec:
+  template:
+    spec:
+      containers:
+        - name: <%my-service%>
+          env:
+            - name: FRAUDIO_GCP_REGION
+              value: europe-west4
+            - name: <%MY_SERVICE%>_FRAUDIO_KAFKA_SERVERS
+              value: kafka-nl-fraudio-8ea0.aivencloud.com:10796
+            - name: <%MY_SERVICE%>_FRAUDIO_KAFKA_SCHEMA_REGISTRY_URL
+              value: https://{user}:{pw}@kafka-nl-fraudio-8ea0.aivencloud.com:10799

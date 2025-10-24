@@ -1,0 +1,30 @@
+fraudio_env_display_name: None
+default_log_level: INFO
+default_app_log_level: INFO
+file_log_level: NOTSET
+hot_reload: false
+openapi_ui: false
+log_stacktraces_http_500: true
+tracing_enabled: true
+running_on_gcloud: false
+cached_tables: [ '' ]
+cached_table_freshness_check_interval_seconds: 5 # Check cached tables for freshness every 5 seconds
+cached_table_refresh_interval_min_seconds: 30 # Refresh cached tables at most every 30 seconds
+cached_table_refresh_interval_max_seconds: 600 # Refresh cached tables at least every 10 minutes
+cached_hash_retention_seconds: 43200 # Cache results of slow hash operations for up to 12 hours
+cached_hash_freshness_check_interval_seconds: 3600 # Expire stale keys hourly
+fraudio_kafka_enabled: false
+fraudio_kafka_producer_timeout_in_seconds: 60
+fraudio_kafka_servers: [ 'localhost:9092' ]
+fraudio_kafka_schema_registry_url: 'http://localhost:8081'
+fraudio_kafka_schema_registry_user: localuser
+fraudio_kafka_schema_registry_pass: localpass
+fraudio_kafka_secrets_path: '~/.tls/local-kafka'
+fraudio_postgres_enabled: false
+fraudio_postgres_host: localhost
+fraudio_postgres_port: '5432'
+fraudio_postgres_database: auth
+fraudio_postgres_user: localuser
+fraudio_postgres_password: localpass
+fraudio_postgres_min_connections: 1
+fraudio_postgres_max_connections: 3

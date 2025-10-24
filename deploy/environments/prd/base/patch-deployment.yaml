@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%my-service%>
+spec:
+  template:
+    spec:
+      containers:
+        - name: <%my-service%>
+          env:
+            - name: FRAUDIO_ENV
+              value: PRD
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "namespace=prd"
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: "0.05"
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_HOST
+              value: fraudio-authdb-fraudio-8ea0.aivencloud.com
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_PORT
+              value: "10794"
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_DATABASE
+              value: auth
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_USER
+              value: authservice
+            - name: <%MY_SERVICE%>_CACHED_TABLE_REFRESH_INTERVAL_MAX_SECONDS
+              value: "120"

@@ -1,0 +1,89 @@
+[tool.poetry]
+name = "<%my-service%>"
+version = "0.0.0" # Leave this. Use VERSION file instead.
+description = "This is a Python Connexion microservice, hosting REST API endpoints to <%achieve your purpose%>"
+authors = ["Fraudio Tech <tech@fraudio.com>"]
+readme = "README.md"
+packages = [{ include = "<%my_service%>", from = "src" }]
+
+[tool.poetry.dependencies]
+# Language
+python = "^3.12"
+poetry = "^1.8.4"
+# Framework
+connexion = "^3.1.0"
+uvicorn = "^0.32.0"
+starlette = "0.47.2"
+# External libraries
+confluent-kafka = { version = "^2.6.0", extras = ["avro"] }
+avro = "^1.11.3"
+jinja2 = "^3.1.2"
+requests = "^2.31.1"
+marshmallow = "^3.21.0"
+marshmallow_enum = "^1.5.1"
+marshmallow-dataclass = { version = "^8.7.1", extras = ["enum"] }
+python-dateutil = "^2.8.3"
+python-dotenv = "^1.0.0"
+prance = "^23.6.21.0"
+pyyaml = "^6.0.1"
+openapi-spec-validator = "^0.7.1"
+asyncpg = "^0.29.0"
+asyncpg-trek = "^0.4.0"
+orjson = "^3.10.7"
+bcrypt = "^4.2.0"
+opentelemetry-exporter-otlp-proto-grpc = "^1.28.0"
+opentelemetry-instrumentation-asgi = "^0.49b0"
+google-cloud-logging = "^3.11.3"
+PyJWT = "^2.10.1"
+httpx = "^0.28.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.3.4"
+coverage = "^7.3"
+safety = "^2"
+pytest-cov = "^4.1.0"
+pytest-srcpaths = "^1.2.1"
+pytest-asyncio = "^0.24.0"
+anyio = "4.8.0"
+connexion = { extras = ["swagger-ui", "uvicorn"], version = "^3.1.0" }
+cyclonedx-bom = "^6.1.1"
+
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest"
+
+[tool.coverage.paths]
+source = ["src/"]
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
+
+ignore_errors = true
+show_missing = true
+
+[[tool.poetry.source]]
+name = "fraudioInternalRepo"
+url = "https://gitlab.com/api/v4/groups/5546704/-/packages/pypi/simple"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core>=1.8.4"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+app = "<%my_service%>.app:main"
+test = "test.run_all:main"
+tests = "test.run_all:main"

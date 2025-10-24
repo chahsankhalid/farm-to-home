@@ -1,0 +1,17 @@
+.env
+.envrc
+.idea/
+.metals/
+.vscode/
+.venv
+**/.tls
+**/.pytest_cache/
+.python-version
+.coverage
+coverage.xml
+TEST-*.xml
+**/__pycache__
+test-results.xml
+**/logs/**/*
+poetry.toml
+**/secrets.plain.yaml

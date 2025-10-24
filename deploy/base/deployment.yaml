@@ -1,0 +1,102 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%my-service%>
+  labels:
+    app.kubernetes.io/component: <%my-service%>
+    app.kubernetes.io/part-of: fraudio
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: <%my-service%>
+  template:
+    metadata:
+      labels:
+        app: <%my-service%>
+    spec:
+      volumes:
+        - name: kafka-auto-credential-stores
+          secret:
+            secretName: kafka-<%my-service%>-secrets
+      containers:
+        - name: <%my-service%>
+          image: registry.gitlab.com/fraudio/<%my-service%>:${CICD_IMAGE_VERSION}
+          imagePullPolicy: Always
+          env:
+            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-<%my-service%>-secrets
+                  key: POSTGRES_PASSWORD
+            - name: <%MY_SERVICE%>_FRAUDIO_KAFKA_SCHEMA_REGISTRY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-<%my-service%>-secrets
+                  key: USER
+            - name: <%MY_SERVICE%>_FRAUDIO_KAFKA_SCHEMA_REGISTRY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-<%my-service%>-secrets
+                  key: USER_PASS
+            - name: OTEL_SERVICE_NAME
+              value: <%my-service%>
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_TRACES_EXPORTER
+              value: "none" # oltp
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://grafana-k8s-monitoring-alloy.monitoring.svc.cluster.local:4317"
+            - name: OTEL_TRACES_SAMPLER
+              value: "always_off" # "parentbased_traceidratio"
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: "1.0"
+            - name: <%MY_SERVICE%>_RUNNING_ON_GCLOUD
+              value: "true"
+            - name: <%MY_SERVICE%>_PORTAL_ACCESS_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: portal-secrets
+                  key: web-password
+                  optional: true
+          resources:
+            requests:
+              memory: 150Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: "1"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: kafka-auto-credential-stores
+              mountPath: "/root/.tls/<%my-service%>-kafka"
+              readOnly: true
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 10
+            periodSeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 3
+            periodSeconds: 5
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 3
+            periodSeconds: 10
+            timeoutSeconds: 1
+      imagePullSecrets:
+        - name: registry.gitlab.com

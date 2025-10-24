@@ -1,0 +1,58 @@
+# This config-file configures the logging used in python-applications.
+# Available default levels: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL
+version: 1
+disable_existing_loggers: true
+formatters:
+  minimal:
+    format: "%(message)s"
+  compact:
+    format: "[%(asctime)s] %(levelname).4s %(module)-20s - %(message)s"
+    datefmt: "%Y-%m-%dT%H:%M:%S%z"
+  extensive:
+    format: "[%(asctime)s] %(levelname).4s %(name)s %(module)s - %(message)s"
+    datefmt: "%Y-%m-%dT%H:%M:%S%z"
+root:
+  level: DEBUG
+  handlers:
+    - stdout
+    - file
+loggers:
+  <%my_service%>: # Logs for this application - make sure to use logger.xyz instead of logging.xyz
+    level: DEBUG
+    propagate: false
+    handlers:
+      - stdout_app
+      - file
+  uvicorn.access:
+    level: WARNING # Don't log each HTTP request, to avoid /healthz log spam
+    propagate: false
+  watchfiles.main:
+    level: INFO
+    propagate: false
+    handlers:
+      - file
+handlers:
+  stdout: &stdout
+    formatter: compact
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+    level: INFO # Can be overridden by app.py
+  stdout_app: &stdout_app
+    <<: *stdout
+    level: DEBUG # Can be overridden by app.py
+  gcloud:
+    <<: *stdout
+    formatter: minimal
+  gcloud_app:
+    <<: *stdout_app
+    formatter: minimal
+  file:
+    level: DEBUG # Can be overridden by app.py
+    class: logging.handlers.RotatingFileHandler
+    formatter: extensive
+    filename: logs/debug.log
+    maxBytes: 1485760  # 1 MB
+    backupCount: 3
+    encoding: utf8
+  default:
+    <<: *stdout

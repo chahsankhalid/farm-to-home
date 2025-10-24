@@ -1,0 +1,6 @@
+{
+  "detail": "Duplicate value '000001' in field 'transactionid'.",
+  "status": 400,
+  "title": "Bad Request",
+  "type": "about:blank"
+}

@@ -1,0 +1,6 @@
+{
+  "detail": "Provided apikey is not valid",
+  "status": 401,
+  "title": "Unauthorized",
+  "type": "about:blank"
+}
