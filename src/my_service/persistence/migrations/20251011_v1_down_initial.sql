@@ -1,1 +1,1 @@
-DROP TABLE <% Reverse up_v1 %>
+DROP TABLE IF EXISTS test_table;
