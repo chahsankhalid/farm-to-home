@@ -5,8 +5,8 @@ from typing import Any, Type, get_type_hints, get_origin, get_args
 
 import yaml
 
-from <%my_service%>.serialization.serializable import Serializable
-from <%my_service%>.util.paths import repository_path, app_name
+from my_service.serialization.serializable import Serializable
+from my_service.util.paths import repository_path, app_name
 
 config_init_lock = RLock()
 
