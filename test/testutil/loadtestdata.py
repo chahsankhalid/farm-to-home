@@ -1,4 +1,4 @@
-from <%my_service%>.util.serdes import json_to_obj
+from insight_engine.util.serdes import json_to_obj
 
 
 def raw(filepath):

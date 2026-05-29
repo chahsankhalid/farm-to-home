@@ -1,4 +1,4 @@
-from <%my_service%>.accesscontrol.credentials import x_fraudio_credentials
+from insight_engine.accesscontrol.credentials import x_fraudio_credentials
 
 
 async def test_invalid_input_returns_none():

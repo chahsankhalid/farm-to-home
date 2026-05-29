@@ -1,4 +1,4 @@
-from <%my_service%>.domain import api_info
+from insight_engine.domain import api_info
 from test.testutil.integration_test import integration_test
 
 TEST_DATA_PATH = 'general'

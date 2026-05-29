@@ -1,4 +1,4 @@
-from <%my_service%>.util import time, text
+from insight_engine.util import time, text
 
 
 class Mocking:

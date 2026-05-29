@@ -1,5 +1,5 @@
-from <%my_service%>.config import ConfigLoader
-from <%my_service%>.util import time
+from insight_engine.config import ConfigLoader
+from insight_engine.util import time
 
 def test_correct_environment():
     cfg = ConfigLoader.get_instance()

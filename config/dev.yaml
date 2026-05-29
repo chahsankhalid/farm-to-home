@@ -3,5 +3,4 @@ default_app_log_level: DEBUG
 file_log_level: DEBUG
 hot_reload: true
 openapi_ui: true
-fraudio_postgres_enabled: true
 tracing_enabled: false
