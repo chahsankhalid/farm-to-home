@@ -3,8 +3,8 @@ import pprint
 
 from httpx import Response
 
-from <%my_service%>.config import ConfigLoader
-from <%my_service%>.util.serdes import obj_to_json, json_to_obj
+from insight_engine.config import ConfigLoader
+from insight_engine.util.serdes import obj_to_json, json_to_obj
 from test.testutil import loadtestdata
 
 logger = logging.getLogger(__name__)

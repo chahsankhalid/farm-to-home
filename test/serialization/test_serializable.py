@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from <%my_service%>.domain.models.credentials import Credentials
-from <%my_service%>.util import time
+from insight_engine.domain.models.credentials import Credentials
+from insight_engine.util import time
 
-from <%my_service%>.domain.models.enums import ApiMode, OnboardingStage
+from insight_engine.domain.models.enums import ApiMode, OnboardingStage
 
 
 async def test_serializable_datetimes():

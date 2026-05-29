@@ -1,4 +1,0 @@
--- Initial schema (placeholder)
-CREATE TABLE IF NOT EXISTS test_table (
-    id SERIAL PRIMARY KEY
-);

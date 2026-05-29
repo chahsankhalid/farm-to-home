@@ -1,5 +1,2 @@
 fraudio_env_display_name: Production
 fraudio_kafka_enabled: true
-fraudio_postgres_enabled: true
-fraudio_postgres_min_connections: 10
-fraudio_postgres_max_connections: 10

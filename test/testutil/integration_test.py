@@ -4,8 +4,8 @@ from typing import Callable
 
 from httpx import AsyncClient
 
-from <%my_service%>.middleware.fraudio_middleware import FraudioMiddleware
-from <%my_service%>.util.paths import repository_path
+from insight_engine.middleware.fraudio_middleware import FraudioMiddleware
+from insight_engine.util.paths import repository_path
 from test.testutil import assertion, loadtestdata
 from test.testutil.mock_kafka_producer import MockKafkaProducer
 

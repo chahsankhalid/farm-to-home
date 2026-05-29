@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from <%my_service%>.util.paths import app_name
+from insight_engine.util.paths import app_name
 
 os.environ['FRAUDIO_ENV'] = 'UNITTEST'
 

@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: <%my-service%>
+  name: insight-engine
 spec:
   template:
     spec:
       containers:
-        - name: <%my-service%>
+        - name: insight-engine
           env:
             - name: FRAUDIO_ENV
               value: PRD
@@ -15,13 +15,5 @@ spec:
               value: "namespace=prd"
             - name: OTEL_TRACES_SAMPLER_ARG
               value: "0.05"
-            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_HOST
-              value: fraudio-authdb-fraudio-8ea0.aivencloud.com
-            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_PORT
-              value: "10794"
-            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_DATABASE
-              value: <%myservicedb%>
-            - name: <%MY_SERVICE%>_FRAUDIO_POSTGRES_USER
-              value: <%myserviceuser%>
-            - name: <%MY_SERVICE%>_CACHED_TABLE_REFRESH_INTERVAL_MAX_SECONDS
+            - name: INSIGHT_ENGINE_CACHED_TABLE_REFRESH_INTERVAL_MAX_SECONDS
               value: "120"

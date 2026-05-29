@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: <%my-service%>
+  name: insight-engine
   labels:
-    app.kubernetes.io/component: <%my-service%>
+    app.kubernetes.io/component: insight-engine
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: <%my-service%>
+    name: insight-engine
   minReplicas: 1
   maxReplicas: 2
   metrics:
