@@ -1,6 +1,7 @@
 import json
 import logging
 import threading
+
 from confluent_kafka import Consumer
 
 from insight_engine.config import ConfigLoader
@@ -35,7 +36,10 @@ class KafkaConsumerService:
 
     def start(self):
         self.running = True
-        self.thread = threading.Thread(target=self._consume_loop, daemon=True)
+        self.thread = threading.Thread(
+            target=self._consume_loop,
+            daemon=True
+        )
         self.thread.start()
 
     def stop(self):
@@ -57,10 +61,33 @@ class KafkaConsumerService:
                 continue
 
             try:
-                payload = json.loads(msg.value().decode('utf-8'))
-                logger.info(f'Received raw transaction: {payload}')
+                raw_message = msg.value().decode('utf-8')
+
+                logger.info(
+                    f"Received Kafka message from "
+                    f"topic={msg.topic()} "
+                    f"partition={msg.partition()} "
+                    f"offset={msg.offset()}"
+                )
+
+                logger.info(
+                    f"Raw payload preview: {raw_message[:1000]}"
+                )
+
+                try:
+                    payload = json.loads(raw_message)
+                    logger.info(
+                        f"Payload keys: {list(payload.keys())}"
+                    )
+                except Exception:
+                    logger.warning(
+                        "Kafka payload is not JSON-decodable"
+                    )
+
             except Exception as e:
-                logger.exception(f'Failed to process Kafka message: {e}')
+                logger.exception(
+                    f'Failed to process Kafka message: {e}'
+                )
 
 
 kafka_consumer = KafkaConsumerService()
