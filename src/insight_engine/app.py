@@ -24,7 +24,7 @@ from insight_engine.domain import models
 from insight_engine.middleware.fraudio_middleware import FraudioMiddleware
 from insight_engine.openapi import bundling
 from insight_engine.persistence.kafka_streaming import kafka_streaming
-from insight_engine.persistence.kafka_consumer import kafka_consumer
+from insight_engine.persistence.kafka_message_handler import handle_kafka_message
 from insight_engine.serialization.custom_json_encoder import CustomJsonEncoder
 from insight_engine.util import paths, yaml
 from insight_engine.util.secrets import build_secrets_manager
@@ -84,16 +84,8 @@ def create_app() -> AsyncApp:
      )
 
     kafka_enabled = config.fraudio_kafka_enabled
-    if kafka_enabled:
-        logger.debug('Initializing Kafka producer...')
-        secret_manager = build_secrets_manager()
-
-        kafka_streaming.setup(secret_manager)
-
-        logger.debug('Initializing Kafka consumer...')
-        kafka_consumer.setup(secret_manager)
-    else:
-        logger.info('Kafka is disabled, all Kafka IO will be skipped.')
+    if not kafka_enabled:
+      logger.info('Kafka is disabled, all Kafka IO will be skipped.')
 
     logger.info('App initialization complete.')
     return cnx_app
@@ -106,8 +98,13 @@ async def lifespan_handler(_: ConnexionMiddleware) -> AsyncIterator:
     config = ConfigLoader.get_instance()
 
     if config.fraudio_kafka_enabled:
-        logger.info('Starting Kafka consumer...')
-        kafka_consumer.start()
+        logger.debug('Initializing Kafka streaming...')
+        secret_manager = build_secrets_manager()
+
+        await kafka_streaming.setup(
+            secret_manager,
+            message_handler=handle_kafka_message
+        )
 
     logger.info('App lifespan: setup complete.')
     yield
@@ -115,8 +112,7 @@ async def lifespan_handler(_: ConnexionMiddleware) -> AsyncIterator:
     logger.info('App lifespan: tearing down async features...')
 
     if config.fraudio_kafka_enabled:
-        logger.info('Stopping Kafka consumer...')
-        kafka_consumer.stop()
+        await kafka_streaming.teardown()
 
     logger.info('App lifespan: teardown complete.')
 
