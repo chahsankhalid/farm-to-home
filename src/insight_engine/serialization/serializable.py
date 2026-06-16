@@ -14,7 +14,11 @@ class Serializable:
     def to_native_dict(self) -> dict:
         # noinspection PyTypeChecker,PyDataclass
         return asdict(self)
-
+   
+    @classmethod
+    def from_kafka_avro_dict(cls, dct: dict) -> Self:
+        return cls.from_dict(dct)
+    
     # Dataclass from native dict (with intact objects, enums, datetimes, etc.)
     @classmethod
     def from_native_dict(cls, dct: dict) -> Self:
