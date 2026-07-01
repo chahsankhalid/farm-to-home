@@ -9,6 +9,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://farmtohome.pt",
+        "https://occupier-twister-rocket.ngrok-free.dev",
         "http://localhost:9292",
         "http://127.0.0.1:9292"
     ],
