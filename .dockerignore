@@ -1,32 +1,42 @@
-<<<<<<< HEAD
-.venv/
+# Python
 __pycache__/
-.git
-.env
-.vscode/
-.pytest_cache/
-.mypy_cache/
-*.pyc
-.DS_Store
-=======
-.*ignore
-.env
-.envrc
-.git
-.gitlab-ci.yml
-.idea
-.venv
-**/.tls
+*.py[cod]
 *.pyo
 *.pyd
-__pycache__
-.pytest_cache
-deploy
-*Dockerfile*
-poetry.toml
-README.md
-logs
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment variables
+.env
+.envrc
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Python caches
+.pytest_cache/
+.mypy_cache/
+
+# macOS
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Test reports
 coverage.xml
 test-results.xml
-deploy
->>>>>>> 03ccc86d988fcde1fef1bd43af64c4dcb3fc3506
+
+# Deployment
+deploy/
+
+# Documentation
+README.md

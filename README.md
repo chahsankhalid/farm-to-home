@@ -1,105 +1,120 @@
-# Insight Engine
+# Farm to Home Recharge Add Extras API
 
-This is a Python microservice that I worked on as part of backend and DevOps tasks. It is based on a Connexion API template and used for handling APIs, data processing, and integrations inside the system.
+A lightweight FastAPI microservice used by the Farm to Home Shopify storefront to allow subscription customers to add and remove extra products from their Recharge subscriptions.
 
 ---
 
-## What this project does
+## Features
 
-* Provides REST API endpoints
-* Handles data processing and logging
-* Connects with PostgreSQL and Kafka
-* Supports monitoring (Prometheus, logging, etc.)
-* Uses configuration-based setup
+- Add extras to an existing Recharge subscription
+- Remove extras from a subscription
+- Retrieve current extras for a customer
+- Recharge API integration
+- CORS support
+- Environment variable configuration
+- Docker support
+
+---
+
+## Tech Stack
+
+- Python 3.12
+- FastAPI
+- Recharge API
+- Requests
+- Docker
 
 ---
 
 ## Project Structure
 
-The project is organized like this:
-
-```id="o3y3qj"
-config/           # configuration files
-deploy/           # Kubernetes deployment configs
-docs/             # documentation
-evaluation/       # evaluation logic
-explainability/   # model explainability (graphs, etc.)
-model/            # model-related code
-retraining/       # retraining pipeline
-
-src/
-  insight_engine/
-    app.py
-    config.py
-    middleware/
-    endpoints/
-    domain/
-    persistence/
-    util/
-    openapi/
-
-test/             # unit tests
+```
+.
+├── config.py
+├── Dockerfile
+├── main.py
+├── recharge.py
+├── requirements.txt
+├── routes/
+├── services/
+└── security.py
 ```
 
 ---
 
-## How to run the project
+## Environment Variables
 
-Install dependencies:
+Create a `.env` file.
 
-```bash id="3r4nzt"
-poetry install
 ```
-
-Run the service:
-
-```bash id="6bb5fp"
-poetry run python -m insight_engine.app
+RECHARGE_API_TOKEN=xxxxxxxxxxxxxxxx
+SHOPIFY_STORE=farmtohome.pt
+API_KEY=your-secret-key
+RECHARGE_BASE_URL=https://api.rechargeapps.com
 ```
 
 ---
 
-## Running tests
+## Install
 
-```bash id="jlhh2k"
-poetry run pytest
+```bash
+pip install -r requirements.txt
 ```
 
 ---
 
-## Deployment
+## Run
 
-Deployment configs are available in the `deploy/` folder.
+```bash
+uvicorn main:app --reload
+```
 
-Service name used in deployment:
+Swagger:
 
-```id="y1n1qe"
-insight-engine
+```
+http://localhost:8000/docs
 ```
 
 ---
 
-## Important Notes
+## Docker
 
-* Python package name: `insight_engine`
-* Deployment name: `insight-engine`
-* Environment variables use prefix: `INSIGHT_ENGINE_`
+Build:
 
----
+```bash
+docker build -t recharge-add-extras .
+```
 
-## What I did in this project
+Run:
 
-* Fixed all template placeholder issues across the project
-* Renamed service from `my_service` to `insight_engine`
-* Updated imports, configs, and test files
-* Fixed CI/CD pipeline issues
-* Ensured all tests and pipeline stages are passing
+```bash
+docker run --env-file .env -p 8000:8000 recharge-add-extras
+```
 
 ---
 
-## Status
+## API Endpoints
 
-Project is working
-Tests are passing
-Pipeline is green
-Ready for deployment
+### Add Extra
+
+```
+POST /subscription/add-extra
+```
+
+### Remove Extra
+
+```
+DELETE /subscription/remove-extra/{subscription_id}
+```
+
+### Get Extras
+
+```
+GET /subscription/extras/{shopify_customer_id}
+```
+
+---
+
+## License
+
+Internal project for Farm to Home.

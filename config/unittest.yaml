@@ -1,5 +1,0 @@
-fraudio_env_display_name: Unit test
-default_log_level: WARNING
-file_log_level: DEBUG
-log_stacktraces_http_500: false # Suppress full stack traces for HTTP 500
-tracing_enabled: false

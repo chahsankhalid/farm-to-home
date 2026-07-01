@@ -15,6 +15,7 @@ def create_extra_subscription(
     )
 
     recharge_customer_id = customer["id"]
+
     address = get_addresses(
         recharge_customer_id
     )["addresses"][0]
@@ -28,6 +29,7 @@ def create_extra_subscription(
         variant_id=variant_id,
         next_charge_date=subscription["next_charge_scheduled_at"]
     )
+
     return {
         "success": True,
         "subscription": subscription["subscription"]
