@@ -1,0 +1,6 @@
+{
+  "detail": "You are not allowed to scopes 'common.forbidden.read'.",
+  "status": 403,
+  "title": "Forbidden",
+  "type": "about:blank"
+}

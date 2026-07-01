@@ -1,0 +1,6 @@
+fraudio_env_display_name: Development
+default_app_log_level: DEBUG
+file_log_level: DEBUG
+hot_reload: true
+openapi_ui: true
+tracing_enabled: false

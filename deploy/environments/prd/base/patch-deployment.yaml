@@ -1,0 +1,19 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insight-engine
+spec:
+  template:
+    spec:
+      containers:
+        - name: insight-engine
+          env:
+            - name: FRAUDIO_ENV
+              value: PRD
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "namespace=prd"
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: "0.05"
+            - name: INSIGHT_ENGINE_CACHED_TABLE_REFRESH_INTERVAL_MAX_SECONDS
+              value: "120"

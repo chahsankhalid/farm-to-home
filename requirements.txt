@@ -1,4 +1,15 @@
+<<<<<<< HEAD
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 requests==2.32.3
 python-dotenv==1.0.1
+=======
+fastapi
+uvicorn
+scikit-learn==1.4.2
+joblib==1.3.2
+prometheus-client
+pydantic
+numpy==1.26.4
+REQ
+>>>>>>> 03ccc86d988fcde1fef1bd43af64c4dcb3fc3506

@@ -1,0 +1,150 @@
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH =~ /^release-.*/'
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^fix\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^bugfix\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^patch\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^config\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^breaking\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-.*/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^hotfix\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^release-.*/'
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^hotfix\// && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+
+include:
+  - project: fraudio/gitlab-pipelines
+    ref: main
+    file:
+      - '/rbs/test.yaml'
+      - '/rbs/versioning.yaml'
+      - '/rbs/integrate.yaml'
+      - '/rbs/security-check.yaml'
+      - '/rbs/pre-release.yaml'
+      - '/rbs/release.yaml'
+      - '/gitops/oci_releases.yaml'
+
+variables:
+  GITLAB_URL: "gitlab.com"
+  SRC_PROJECT_ID: $CI_PROJECT_ID
+  NAME: $CI_PROJECT_NAME
+  FF_SCRIPT_SECTIONS: 1  # Show duration of each script step in build logs
+  IMAGE_SUFFIX: $CI_COMMIT_REF_SLUG
+
+stages:
+  - build
+  - test
+  - versioning
+  - build-package
+  - publish
+  - integrate
+  - pre-release-check
+  - pre-release
+  - release-check
+  - release
+
+unit-tests:
+  stage: test
+  image: python:3.12.7-slim
+  cache:
+    key: poetry.lock
+  before_script:
+    - pip install poetry==1.8.4 toml==0.10.2 pytest==8.3.4 cyclonedx-bom==6.1.1
+    - mkdir -p ~/.config/pypoetry/
+    - mkdir -p logs
+    - python poetry_set_app_version.py
+    - poetry config http-basic.fraudioInternalRepo 'gitlab-ci-token' ${CI_JOB_TOKEN}
+    - poetry -v update
+  script:
+    - poetry run pytest
+    - cyclonedx-py poetry -o "logs/$(poetry version | awk '{print $1}')-$(cat VERSION).bom.json"
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - logs/*.bom.json
+    reports:
+      junit: [ 'logs/test-results.xml' ]
+      coverage_report:
+        coverage_format: cobertura
+        path: 'logs/coverage.xml'
+
+Containerize:
+  stage: publish
+  tags:
+    - gitlab-org-docker
+  image: docker:24.0.7
+  services:
+    - docker:24.0.7-dind
+  variables:
+    IMAGE_TAG_SUFFIX: ""
+  script:
+    - export IMAGE_TAG=$(cat VERSION)$IMAGE_TAG_SUFFIX
+    - echo "Building to $IMAGE_TAG..."
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - >
+      docker build
+      --build-arg GITLAB_REGISTRY_USER=Job-Token
+      --build-arg GITLAB_REGISTRY_TOKEN=$CI_JOB_TOKEN
+      --progress=plain -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
+    - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_COMMIT_BRANCH =~ /^release-.*/'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "pipeline" && $CI_COMMIT_BRANCH =~ /^release-.*/'
+      when: on_success
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+      when: manual
+      allow_failure: true
+      variables:
+        IMAGE_TAG_SUFFIX: $CI_COMMIT_SHORT_SHA
+
+DeployBranchToTst:
+  extends: .release-oci
+  stage: integrate
+  dependencies:
+    - Containerize
+  variables:
+    OCI_IMAGE_TAG: test
+    IMAGE_TAG_SUFFIX: ""
+  before_script:
+    - export IMAGE_TAG="$(cat VERSION)$IMAGE_TAG_SUFFIX"
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+      when: manual
+      allow_failure: true
+      variables:
+        IMAGE_TAG_SUFFIX: $CI_COMMIT_SHORT_SHA
+
+.deploy: &deploy
+  trigger:
+    project: fraudio/infrastructure/kubernetes
+    branch: master
+    strategy: depend
+
+DeployToTesting:
+  extends: .release-oci
+  stage: integrate
+  variables:
+    OCI_IMAGE_TAG: test
+  before_script:
+    - export IMAGE_TAG=$(cat VERSION)
+
+ReleaseToStaging:
+  extends: .release-oci
+  stage: pre-release
+  variables:
+    OCI_IMAGE_TAG: latest
+  before_script:
+    - export IMAGE_TAG=$(cat VERSION)
+
+ReleaseToProduction:
+  extends: .release-oci
+  stage: release
+  variables:
+    OCI_IMAGE_TAG: stable
+  before_script:
+    - export IMAGE_TAG=$(cat VERSION)

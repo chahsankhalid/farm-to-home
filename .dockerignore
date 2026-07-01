@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .venv/
 __pycache__/
 .git
@@ -7,3 +8,25 @@ __pycache__/
 .mypy_cache/
 *.pyc
 .DS_Store
+=======
+.*ignore
+.env
+.envrc
+.git
+.gitlab-ci.yml
+.idea
+.venv
+**/.tls
+*.pyo
+*.pyd
+__pycache__
+.pytest_cache
+deploy
+*Dockerfile*
+poetry.toml
+README.md
+logs
+coverage.xml
+test-results.xml
+deploy
+>>>>>>> 03ccc86d988fcde1fef1bd43af64c4dcb3fc3506

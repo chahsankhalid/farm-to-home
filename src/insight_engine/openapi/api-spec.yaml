@@ -1,0 +1,131 @@
+openapi: '3.0.3'
+info:
+  title: My Service
+  version: x.y.z # See VERSION file
+  license:
+    name: Proprietary
+servers:
+  - url: '' # Prefix for all endpoints
+tags:
+  - name: general
+    description: 'Example endpoints for testing connectivity, error handling and authentication'
+components:
+  securitySchemes:
+    XFraudioCredentials:
+      type: apiKey
+      in: header
+      name: X-Fraudio-Credentials
+      x-apikeyInfoFunc: insight_engine.accesscontrol.credentials.x_fraudio_credentials
+security:
+  - XFraudioCredentials: [ ]
+paths:
+  /:
+    get:
+      summary: Welcome message
+      operationId: insight_engine.endpoints.general_endpoints.welcome
+      tags:
+        - general
+      security: [ ]
+      responses:
+        '200':
+          description: A welcome message
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/message.yaml#Message'
+  /echo:
+    post:
+      summary: Echoes the provided JSON POST body
+      operationId: insight_engine.endpoints.general_endpoints.echo
+      requestBody:
+        $ref: './schemas/arbitrary-json.yaml#ArbitraryJson'
+      tags:
+        - general
+      security: [ ]
+      responses:
+        '200':
+          $ref: './schemas/arbitrary-json.yaml#ArbitraryJson'
+  /example-error:
+    get:
+      summary: 'Example of an API error: we follow the HTTP Problem spec, RFC-7807'
+      operationId: insight_engine.endpoints.general_endpoints.duplicate_value_error
+      security: [ ]
+      tags:
+        - general
+      responses:
+        default:
+          $ref: './schemas/problem.yaml#Problem'
+  /example-error/internal:
+    get:
+      summary: Example of an unexpected internal error
+      operationId: insight_engine.endpoints.general_endpoints.internal_error
+      x-hiddenFromUi: true
+      security: [ ]
+      tags:
+        - general
+      responses:
+        default:
+          $ref: './schemas/problem.yaml#Problem'
+  /example-error/forbidden:
+    get:
+      summary: Example of a rejected access error
+      operationId: insight_engine.endpoints.general_endpoints.forbidden_error
+      x-hiddenFromUi: true
+      tags:
+        - general
+      responses:
+        default:
+          $ref: './schemas/problem.yaml#Problem'
+  /healthz:
+    get:
+      summary: Health check endpoint
+      operationId: insight_engine.endpoints.general_endpoints.healthz
+      tags:
+        - general
+      security: [ ]
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/health-status.yaml#HealthStatus'
+  
+  /predict:
+    post:
+      summary: Predict fraud
+      operationId: insight_engine.endpoints.predict.predict
+      tags:
+        - general
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - features
+              properties:
+                features:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 1
+      responses:
+        '200':
+          description: Prediction result
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - prediction
+                  - probability
+                properties:
+                  prediction:
+                    type: integer
+                  probability:
+                    type: number
+                    format: float

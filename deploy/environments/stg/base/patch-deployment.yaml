@@ -1,0 +1,15 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insight-engine
+spec:
+  template:
+    spec:
+      containers:
+        - name: insight-engine
+          env:
+            - name: FRAUDIO_ENV
+              value: STG
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "namespace=stg"

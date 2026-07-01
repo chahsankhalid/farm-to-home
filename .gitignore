@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 *.pyc
@@ -11,3 +12,24 @@ venv/
 
 # macOS
 .DS_Store
+=======
+
+.env
+.envrc
+.idea/
+.metals/
+.vscode/
+.venv
+**/.tls
+**/.pytest_cache/
+.python-version
+.coverage
+coverage.xml
+TEST-*.xml
+**/__pycache__
+test-results.xml
+**/logs/**/*
+poetry.toml
+**/secrets.plain.yaml
+.DS_Store
+>>>>>>> 03ccc86d988fcde1fef1bd43af64c4dcb3fc3506
