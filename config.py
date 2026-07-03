@@ -6,6 +6,7 @@ load_dotenv()
 RECHARGE_TOKEN = os.getenv("RECHARGE_API_TOKEN")
 SHOPIFY_STORE = os.getenv("SHOPIFY_STORE")
 API_KEY = os.getenv("API_KEY")
+SHOPIFY_API_SECRET = os.getenv("SHOPIFY_API_SECRET")
 
 BASE_URL = os.getenv(
     "RECHARGE_BASE_URL",
@@ -17,7 +18,8 @@ ALLOWED_ORIGINS = os.getenv(
     "https://farmtohome.pt,http://localhost:9292,http://127.0.0.1:9292"
 ).split(",")
 
-print("Recharge token loaded:", bool(RECHARGE_TOKEN))
+if not RECHARGE_TOKEN:
+    raise RuntimeError("RECHARGE_API_TOKEN is not configured.")
 
 HEADERS = {
     "X-Recharge-Access-Token": RECHARGE_TOKEN,

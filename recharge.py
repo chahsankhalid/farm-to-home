@@ -1,5 +1,6 @@
 import requests
 from config import BASE_URL, HEADERS
+from fastapi import HTTPException
 
 
 def get_subscriptions(customer_id):
@@ -64,10 +65,6 @@ def create_subscription(address_id, variant_id, next_charge_date):
         json=payload
     )
 
-    print("Payload:", payload)
-    print("Status:", response.status_code)
-    print("Response:", response.text)
-
     response.raise_for_status()
 
     return response.json()
@@ -78,7 +75,6 @@ def delete_subscription(subscription_id):
         f"{BASE_URL}/subscriptions/{subscription_id}",
         headers=HEADERS
     )
-
     response.raise_for_status()
 
     return {
@@ -92,13 +88,9 @@ def get_extra_subscriptions(customer_id):
     extras = []
 
     for subscription in subscriptions:
-
         properties = subscription.get("properties", [])
-
         is_extra = False
-
         for prop in properties:
-
             if (
                 prop["name"] == "subscription_type"
                 and prop["value"] == "extra"
@@ -127,14 +119,34 @@ def get_customer_by_shopify_id(shopify_customer_id):
         }
     )
 
-    print("Status:", response.status_code)
-    print("Response:", response.text)
-
     response.raise_for_status()
 
     customers = response.json()["customers"]
 
     if not customers:
-        raise Exception("Recharge customer not found.")
+        raise HTTPException(
+            status_code=404,
+            detail="Recharge customer not found."
+        )
 
     return customers[0]
+
+def subscription_belongs_to_customer(recharge_customer_id, subscription_id):
+
+    subscriptions = get_subscriptions(
+        recharge_customer_id
+    )["subscriptions"]
+
+    return any(
+        subscription["id"] == int(subscription_id)
+        for subscription in subscriptions
+    )
+    
+def customer_has_extra_variant(customer_id, variant_id):
+
+    subscriptions = get_subscriptions(customer_id)["subscriptions"]
+
+    return any(
+        subscription["shopify_variant_id"] == int(variant_id)
+        for subscription in subscriptions
+    )
