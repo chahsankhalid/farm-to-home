@@ -35,9 +35,7 @@ def create_extra_subscription(
             detail="This extra is already in the subscription."
         )
 
-    addresses = get_addresses(
-        recharge_customer_id
-    )["addresses"]
+    addresses = get_addresses(recharge_customer_id).get("addresses", [])
 
     if not addresses:
         raise HTTPException(
@@ -45,9 +43,7 @@ def create_extra_subscription(
             detail="Customer has no delivery address."
         )
 
-    subscriptions = get_subscriptions(
-        recharge_customer_id
-    )["subscriptions"]
+    subscriptions = get_subscriptions(recharge_customer_id).get("subscriptions", [])
 
     if not subscriptions:
         raise HTTPException(
@@ -55,10 +51,10 @@ def create_extra_subscription(
             detail="Customer has no active subscription."
         )
 
-    address = addresses[0]
-    subscription = subscriptions[0]
+    address = next(iter(addresses), None)
+    subscription = next(iter(subscriptions), None)
 
-    subscription = create_subscription(
+    new_subscription = create_subscription(
         address_id=address["id"],
         variant_id=variant_id,
         next_charge_date=subscription["next_charge_scheduled_at"]
@@ -66,5 +62,5 @@ def create_extra_subscription(
 
     return {
         "success": True,
-        "subscription": subscription["subscription"]
+        "subscription": new_subscription["subscription"]
     }

@@ -5,8 +5,6 @@ load_dotenv()
 
 RECHARGE_TOKEN = os.getenv("RECHARGE_API_TOKEN")
 SHOPIFY_STORE = os.getenv("SHOPIFY_STORE")
-API_KEY = os.getenv("API_KEY")
-SHOPIFY_API_SECRET = os.getenv("SHOPIFY_API_SECRET")
 
 BASE_URL = os.getenv(
     "RECHARGE_BASE_URL",
