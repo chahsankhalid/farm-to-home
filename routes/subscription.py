@@ -1,17 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from pydantic import BaseModel
-
-from security import verify_api_key
 
 from services.add_extra import create_extra_subscription
 from services.remove_extra import remove_extra
 from services.get_extras import get_extras
 
 router = APIRouter()
-
-#router = APIRouter(
- #   dependencies=[Depends(verify_api_key)]
-#)
 
 class AddExtraRequest(BaseModel):
     shopify_customer_id: str
