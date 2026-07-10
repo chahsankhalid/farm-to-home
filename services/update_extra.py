@@ -41,5 +41,5 @@ def update_extra(
 
     return {
         "success": True,
-        "subscription": subscription
+        "subscription": subscription["subscription"]
     }

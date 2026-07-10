@@ -42,7 +42,7 @@ def create_extra_subscription(
 
         return {
             "success": True,
-            "subscription": updated
+            "subscription": updated["subscription"]
         }
 
     addresses = get_addresses(recharge_customer_id).get("addresses", [])
