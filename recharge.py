@@ -34,12 +34,12 @@ def get_addresses(customer_id):
     return response.json()
 
 
-def create_subscription(address_id, variant_id, next_charge_date):
+def create_subscription(address_id, variant_id, quantity, next_charge_date):
 
     payload = {
         "address_id": address_id,
         "shopify_variant_id": int(variant_id),
-        "quantity": 1,
+        "quantity": int(quantity),
 
         "order_interval_unit": "week",
         "order_interval_frequency": "1",
@@ -104,7 +104,8 @@ def get_extra_subscriptions(customer_id):
                 "subscription_id": subscription["id"],
                 "variant_id": subscription["shopify_variant_id"],
                 "title": subscription["product_title"],
-                "price": subscription["price"]
+                "price": subscription["price"],
+                "quantity": subscription.get("quantity", 1)
             })
 
     return extras
@@ -150,3 +151,19 @@ def customer_has_extra_variant(customer_id, variant_id):
         subscription["shopify_variant_id"] == int(variant_id)
         for subscription in subscriptions
     )
+    
+def update_subscription_quantity(subscription_id, quantity):
+
+    payload = {
+        "quantity": int(quantity)
+    }
+
+    response = requests.put(
+        f"{BASE_URL}/subscriptions/{subscription_id}",
+        headers=HEADERS,
+        json=payload
+    )
+
+    response.raise_for_status()
+
+    return response.json()

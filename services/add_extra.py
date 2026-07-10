@@ -11,7 +11,8 @@ from recharge import (
 
 def create_extra_subscription(
     shopify_customer_id,
-    variant_id
+    variant_id,
+    quantity=1
 ):
 
     customer = get_customer_by_shopify_id(
@@ -57,6 +58,7 @@ def create_extra_subscription(
     new_subscription = create_subscription(
         address_id=address["id"],
         variant_id=variant_id,
+        quantity=quantity,
         next_charge_date=subscription["next_charge_scheduled_at"]
     )
 
