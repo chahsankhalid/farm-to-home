@@ -167,3 +167,20 @@ def update_subscription_quantity(subscription_id, quantity):
     response.raise_for_status()
 
     return response.json()
+
+def get_extra_subscription_by_variant(customer_id, variant_id):
+
+    subscriptions = get_subscriptions(customer_id)["subscriptions"]
+
+    for subscription in subscriptions:
+        if (
+            subscription["shopify_variant_id"] == int(variant_id)
+            and any(
+                p["name"] == "subscription_type"
+                and p["value"] == "extra"
+                for p in subscription.get("properties", [])
+            )
+        ):
+            return subscription
+
+    return None

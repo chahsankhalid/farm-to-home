@@ -5,7 +5,8 @@ from recharge import (
     get_addresses,
     get_subscriptions,
     create_subscription,
-    customer_has_extra_variant
+    get_extra_subscription_by_variant,
+    update_subscription_quantity
 )
 
 
@@ -27,14 +28,22 @@ def create_extra_subscription(
 
     recharge_customer_id = customer["id"]
     
-    if customer_has_extra_variant(
-        recharge_customer_id,
-        variant_id
-    ):
-        raise HTTPException(
-            status_code=400,
-            detail="This extra is already in the subscription."
+    existing = get_extra_subscription_by_variant(
+    recharge_customer_id,
+    variant_id
+)
+
+    if existing:
+
+        updated = update_subscription_quantity(
+            existing["id"],
+            quantity
         )
+
+        return {
+            "success": True,
+            "subscription": updated
+        }
 
     addresses = get_addresses(recharge_customer_id).get("addresses", [])
 
