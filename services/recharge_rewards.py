@@ -32,6 +32,10 @@ def sync_recharge_rewards(db: Session):
             charge["email"],
         )
 
+        print("Recharge email:", charge["email"])
+        print("Customer found:", customer)
+        print("Recharge Charge:", charge["id"])
+        
         if not customer:
             continue
 
