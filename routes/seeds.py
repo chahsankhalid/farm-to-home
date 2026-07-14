@@ -136,8 +136,6 @@ def dashboard(
     shopify_customer_id: str,
     db: Session = Depends(get_db),
 ):
-    print("🔥 DASHBOARD REQUEST:", shopify_customer_id)
-
     dashboard = get_dashboard(
         db,
         shopify_customer_id,
@@ -150,15 +148,11 @@ def dashboard(
             "history": [],
         }
 
-    response = {
+    return {
         "balance": dashboard["customer"].current_balance,
         "rewards": dashboard["rewards"],
         "history": dashboard["history"],
     }
-
-    print("🔥 RESPONSE:", response)
-
-    return response
 
 @router.post("/seed-rewards")
 def seed_rewards(db: Session = Depends(get_db)):
