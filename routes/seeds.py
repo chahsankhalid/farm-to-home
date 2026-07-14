@@ -151,3 +151,51 @@ def dashboard(
     print("🔥 RESPONSE:", response)
 
     return response
+
+from models.reward import Reward
+
+@router.post("/seed-rewards")
+def seed_rewards(db: Session = Depends(get_db)):
+    rewards = [
+        {
+            "name": "Free Soup",
+            "description": "Redeem one free soup",
+            "seed_cost": 100,
+            "reward_type": "free_product",
+            "reward_value": "FREE_SOUP",
+        },
+        {
+            "name": "Free Bread",
+            "description": "Redeem one free bread",
+            "seed_cost": 150,
+            "reward_type": "free_product",
+            "reward_value": "FREE_BREAD",
+        },
+        {
+            "name": "10% Discount",
+            "description": "10% off next order",
+            "seed_cost": 300,
+            "reward_type": "discount",
+            "reward_value": "10_PERCENT",
+        },
+    ]
+
+    added = 0
+
+    for item in rewards:
+        exists = (
+            db.query(Reward)
+            .filter(Reward.name == item["name"])
+            .first()
+        )
+
+        if not exists:
+            db.add(Reward(**item))
+            added += 1
+
+    db.commit()
+
+    return {
+        "status": "success",
+        "added": added,
+    }
