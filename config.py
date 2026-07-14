@@ -11,9 +11,19 @@ BASE_URL = os.getenv(
     "https://api.rechargeapps.com"
 )
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+SHOPIFY_WEBHOOK_SECRET = os.getenv(
+    "SHOPIFY_WEBHOOK_SECRET",
+    ""
+)
+
 ALLOWED_ORIGINS = os.getenv(
     "ALLOWED_ORIGINS",
-    "https://farmtohome.pt,http://localhost:9292,http://127.0.0.1:9292"
+    "https://farmtohome.pt,"
+    "http://localhost:9292,"
+    "http://127.0.0.1:9292,"
+    "https://extensions.shopifycdn.com"
 ).split(",")
 
 if not RECHARGE_TOKEN:
