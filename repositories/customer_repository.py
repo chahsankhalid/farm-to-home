@@ -56,3 +56,13 @@ def deduct_balance(
     db.refresh(customer)
 
     return customer
+
+def get_by_email(
+    db: Session,
+    email: str,
+):
+    return (
+        db.query(Customer)
+        .filter(Customer.email == email)
+        .first()
+    )

@@ -20,6 +20,7 @@ from services.redemption import redeem_reward
 from services.history import get_history
 from services.dashboard import get_dashboard
 from models.reward import Reward
+from services.recharge_rewards import sync_recharge_rewards
 
 print("✅ SEEDS ROUTER LOADED") 
 
@@ -199,3 +200,9 @@ def seed_rewards(db: Session = Depends(get_db)):
         "status": "success",
         "added": added,
     }
+    
+@router.post("/sync-recharge")
+def sync_recharge(
+    db: Session = Depends(get_db),
+):
+    return sync_recharge_rewards(db)

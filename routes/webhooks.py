@@ -1,12 +1,10 @@
-from fastapi import APIRouter
-
-from schemas.shopify_order import ShopifyOrderPaid
-
-from fastapi import Depends
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from database import get_db
+from schemas.shopify_order import ShopifyOrderPaid
 from services.shopify_webhooks import process_paid_order
+
 
 router = APIRouter(
     prefix="/webhooks",
@@ -19,7 +17,6 @@ async def orders_paid(
     order: ShopifyOrderPaid,
     db: Session = Depends(get_db),
 ):
-
     customer = process_paid_order(
         db=db,
         order=order,

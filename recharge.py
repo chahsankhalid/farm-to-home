@@ -184,3 +184,18 @@ def get_extra_subscription_by_variant(customer_id, variant_id):
             return subscription
 
     return None
+
+def get_charges(status="SUCCESS", limit=50):
+
+    response = requests.get(
+        f"{BASE_URL}/charges",
+        headers=HEADERS,
+        params={
+            "status": status,
+            "limit": limit,
+        },
+    )
+
+    response.raise_for_status()
+
+    return response.json()

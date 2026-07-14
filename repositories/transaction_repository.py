@@ -52,3 +52,16 @@ def get_customer_transactions(
         )
         .all()
     )
+    
+def get_by_recharge_charge_id(
+    db: Session,
+    recharge_charge_id: str,
+):
+    return (
+        db.query(SeedTransaction)
+        .filter(
+            SeedTransaction.recharge_charge_id
+            == recharge_charge_id
+        )
+        .first()
+    )
