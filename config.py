@@ -12,6 +12,7 @@ BASE_URL = os.getenv(
 )
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+SYNC_API_KEY = os.getenv("SYNC_API_KEY", "")
 
 SHOPIFY_WEBHOOK_SECRET = os.getenv(
     "SHOPIFY_WEBHOOK_SECRET",

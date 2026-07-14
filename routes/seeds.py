@@ -1,17 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Header, HTTPException
 from services.db_test import test_database_connection
 
-from fastapi import Depends
 from sqlalchemy.orm import Session
+from config import SYNC_API_KEY
 
 from database import get_db
-from services.seeds import get_customer_balance
+from services.seeds import get_customer_balance, get_or_create_customer, award_seeds
 
 from schemas.customer import CustomerRequest
-from services.seeds import get_or_create_customer
 
 from schemas.award import AwardSeedsRequest
-from services.seeds import award_seeds
 
 from services.rewards import list_rewards
 
@@ -204,5 +202,13 @@ def seed_rewards(db: Session = Depends(get_db)):
 @router.post("/sync-recharge")
 def sync_recharge(
     db: Session = Depends(get_db),
+    x_api_key: str = Header(None),
 ):
+
+    if x_api_key != SYNC_API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized",
+        )
+
     return sync_recharge_rewards(db)

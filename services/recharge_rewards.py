@@ -61,10 +61,6 @@ def sync_recharge_rewards(db: Session):
             awarded += 1
 
         except Exception as e:
-            print(
-                f"Failed to process Recharge charge "
-                f"{charge['id']}: {e}"
-            )
             continue
 
     return {
