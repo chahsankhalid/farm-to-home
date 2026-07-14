@@ -10,4 +10,5 @@ class ShopifyOrderPaid(BaseModel):
     id: int
     email: str
     total_price: str
+    financial_status: str
     customer: ShopifyCustomer

@@ -1,14 +1,17 @@
 from sqlalchemy.orm import Session
 
+from repositories.transaction_repository import get_by_order_id
 from services.seed_rules import calculate_seeds
 from services.seeds import award_seeds
-from repositories.transaction_repository import get_by_order_id
 
 
 def process_paid_order(
     db: Session,
     order,
 ):
+
+    if order.financial_status.lower() != "paid":
+        return None
 
     existing_transaction = get_by_order_id(
         db,
@@ -27,7 +30,7 @@ def process_paid_order(
         shopify_customer_id=str(order.customer.id),
         email=order.customer.email,
         amount=earned_seeds,
-        reason=f"Order #{order.id}",
+        reason=f"Shopify Order #{order.id}",
         order_id=str(order.id),
     )
 
