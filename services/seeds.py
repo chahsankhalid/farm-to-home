@@ -50,6 +50,7 @@ def award_seeds(
     amount: int,
     reason: str,
     order_id: str | None = None,
+    recharge_charge_id: str | None = None,
 ):
     try:
         customer = get_or_create_customer(
@@ -65,6 +66,7 @@ def award_seeds(
             reason=reason,
             transaction_type=TransactionType.EARN,
             order_id=order_id,
+            recharge_charge_id=recharge_charge_id,
         )
 
         update_balance(
