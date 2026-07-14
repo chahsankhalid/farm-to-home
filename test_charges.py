@@ -1,6 +1,4 @@
-from recharge import get_charges
+from recharge import get_customer
 import json
 
-charge = get_charges()["charges"][0]
-
-print(json.dumps(charge, indent=2))
+print(json.dumps(get_customer(236000361), indent=2))

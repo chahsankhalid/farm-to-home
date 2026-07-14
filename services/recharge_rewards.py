@@ -1,13 +1,16 @@
 from sqlalchemy.orm import Session
 
-from recharge import get_charges
+from recharge import get_charges, get_customer
 
-from repositories.customer_repository import get_by_email
+
 from repositories.transaction_repository import (
     get_by_recharge_charge_id,
 )
 
-from services.seeds import award_seeds
+from services.seeds import (
+    award_seeds,
+    get_or_create_customer,
+)
 from services.seed_rules import calculate_seeds
 
 
@@ -19,42 +22,50 @@ def sync_recharge_rewards(db: Session):
 
     for charge in charges:
 
-        # Already processed?
-        if get_by_recharge_charge_id(
-            db,
-            str(charge["id"]),
-        ):
+        try:
+
+            # Skip if already processed
+            if get_by_recharge_charge_id(
+                db,
+                str(charge["id"]),
+            ):
+                continue
+
+            # Get Recharge customer
+            recharge_customer = get_customer(
+                charge["customer_id"]
+            )["customer"]
+
+            # Create or fetch our local customer
+            customer = get_or_create_customer(
+                db=db,
+                shopify_customer_id=recharge_customer["shopify_customer_id"],
+                email=recharge_customer["email"],
+            )
+
+            # Business rule:
+            # 1€ spent = 1 Seed
+            total = float(charge["total_line_items_price"])
+
+            seeds = calculate_seeds(total)
+
+            award_seeds(
+                db=db,
+                shopify_customer_id=customer.shopify_customer_id,
+                email=customer.email,
+                amount=seeds,
+                reason=f"Recharge Charge #{charge['id']}",
+                recharge_charge_id=str(charge["id"]),
+            )
+
+            awarded += 1
+
+        except Exception as e:
+            print(
+                f"Failed to process Recharge charge "
+                f"{charge['id']}: {e}"
+            )
             continue
-
-        # Find our customer using email
-        customer = get_by_email(
-            db,
-            charge["email"],
-        )
-
-        print("Recharge email:", charge["email"])
-        print("Customer found:", customer)
-        print("Recharge Charge:", charge["id"])
-        
-        if not customer:
-            continue
-
-        # Business rule:
-        # 1€ spent = 1 Seed
-        total = float(charge["total_line_items_price"])
-
-        seeds = calculate_seeds(total)
-
-        award_seeds(
-            db=db,
-            shopify_customer_id=customer.shopify_customer_id,
-            email=customer.email,
-            amount=seeds,
-            reason=f"Recharge Charge #{charge['id']}",
-            recharge_charge_id=str(charge["id"]),
-        )
-
-        awarded += 1
 
     return {
         "status": "success",

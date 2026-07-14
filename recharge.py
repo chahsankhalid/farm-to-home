@@ -199,3 +199,14 @@ def get_charges(status="SUCCESS", limit=50):
     response.raise_for_status()
 
     return response.json()
+
+def get_customer(customer_id):
+
+    response = requests.get(
+        f"{BASE_URL}/customers/{customer_id}",
+        headers=HEADERS,
+    )
+
+    response.raise_for_status()
+
+    return response.json()
