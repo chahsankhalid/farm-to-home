@@ -10,8 +10,10 @@ def process_paid_order(
     order,
 ):
 
-    if order.financial_status.lower() != "paid":
-        return None
+    print(f"Order ID: {order.id}")
+    print(f"Customer ID: {order.customer.id}")
+    print(f"Email: {order.customer.email}")
+    print(f"Total: {order.total_price}")
 
     existing_transaction = get_by_order_id(
         db,
@@ -19,11 +21,14 @@ def process_paid_order(
     )
 
     if existing_transaction:
+        print("Duplicate order")
         return None
 
     earned_seeds = calculate_seeds(
         float(order.total_price)
     )
+
+    print(f"Seeds awarded: {earned_seeds}")
 
     customer = award_seeds(
         db=db,
@@ -33,5 +38,7 @@ def process_paid_order(
         reason=f"Shopify Order #{order.id}",
         order_id=str(order.id),
     )
+
+    print(f"New balance: {customer.current_balance}")
 
     return customer
