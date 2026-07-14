@@ -19,6 +19,7 @@ from schemas.redeem import RedeemRewardRequest
 from services.redemption import redeem_reward
 from services.history import get_history
 from services.dashboard import get_dashboard
+from models.reward import Reward
 
 print("✅ SEEDS ROUTER LOADED") 
 
@@ -142,6 +143,13 @@ def dashboard(
         shopify_customer_id,
     )
 
+    if dashboard is None:
+        return {
+            "balance": 0,
+            "rewards": list_rewards(db),
+            "history": [],
+        }
+
     response = {
         "balance": dashboard["customer"].current_balance,
         "rewards": dashboard["rewards"],
@@ -151,8 +159,6 @@ def dashboard(
     print("🔥 RESPONSE:", response)
 
     return response
-
-from models.reward import Reward
 
 @router.post("/seed-rewards")
 def seed_rewards(db: Session = Depends(get_db)):
