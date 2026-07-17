@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Reward Redemption</title>
+</head>
+
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:40px;background:#f5f5f5;">
+
+<tr>
+
+<td align="center">
+
+<table width="650" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;">
+
+<tr>
+
+<td style="background:#2E7D32;padding:30px;color:white;text-align:center;">
+
+<h1 style="margin:0;">
+🎁 Reward Redemption
+</h1>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="padding:40px;">
+
+<p>
+A customer has redeemed a Terramay Seeds reward.
+</p>
+
+<table width="100%" cellpadding="8">
+
+<tr>
+
+<td><strong>Customer</strong></td>
+
+<td>{{ customer_email }}</td>
+
+</tr>
+
+<tr>
+
+<td><strong>Reward</strong></td>
+
+<td>{{ reward_name }}</td>
+
+</tr>
+
+<tr>
+
+<td><strong>Description</strong></td>
+
+<td>{{ reward_description }}</td>
+
+</tr>
+
+<tr>
+
+<td><strong>Seeds Used</strong></td>
+
+<td>{{ reward_cost }}</td>
+
+</tr>
+
+<tr>
+
+<td><strong>Remaining Balance</strong></td>
+
+<td>{{ remaining_balance }}</td>
+
+</tr>
+
+</table>
+
+<div style="margin-top:35px;padding:20px;background:#FFF8E5;border-left:5px solid #FFC107;">
+
+<h3 style="margin-top:0;">
+Required Action
+</h3>
+
+<p>
+
+{{ admin_action }}
+
+</p>
+
+</div>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="background:#f5f5f5;padding:20px;text-align:center;color:#777;font-size:13px;">
+
+Terramay Admin Notification
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>

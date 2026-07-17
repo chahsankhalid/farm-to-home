@@ -10,13 +10,6 @@ def process_paid_order(
     order,
 ):
 
-    print(f"Order ID: {order.id}")
-    print(f"Customer ID: {order.customer.id}")
-    print(f"Email: {order.customer.email}")
-    print("=== SHOPIFY WEBHOOK V2 ===")
-    print(f"Subtotal: {order.subtotal_price}")
-    print(f"Total: {order.total_price}")
-
     existing_transaction = get_by_order_id(
         db,
         str(order.id),

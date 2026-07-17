@@ -26,10 +26,16 @@ class Redemption(Base):
         ForeignKey("rewards.id"),
         nullable=False,
     )
-
+    
+    seeds_spent = Column(
+        Integer,
+        nullable=False,
+    )
+    
     status = Column(
         String,
-        default="completed",
+        nullable=False,
+        default="PENDING",
     )
 
     created_at = Column(
